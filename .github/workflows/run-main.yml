@@ -1,0 +1,29 @@
+name: Run main.js
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    environment: Base
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run main.js with PR vars
+        run: node .github/workflows/main.js
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SCANNER_URL: ${{ vars.SCANNER_URL }}
+          SCANNER_PROJECT_ID: ${{ vars.SCANNER_PROJECT_ID }}
